@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "125521969445",
+    "project_id": "cashtrack-5f06a",
+    "storage_bucket": "cashtrack-5f06a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125521969445:android:89baea6e6e9d5870a05acc",
+        "android_client_info": {
+          "package_name": "com.example.cash_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdtKEdk1_MN3IpWj0Am_kNmiRDtQc-GYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125521969445:android:dd87cbb71c120a6da05acc",
+        "android_client_info": {
+          "package_name": "com.example.cash_track"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdtKEdk1_MN3IpWj0Am_kNmiRDtQc-GYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
