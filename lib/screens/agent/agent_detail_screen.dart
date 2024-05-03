@@ -25,7 +25,17 @@ class _AgentDetailScreenState extends State<AgentDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF30315C),
+        backgroundColor: const Color(0xFF24274A),
+        leadingWidth: 45,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_outlined,
+          ),
+          color: Colors.white,
+        ),
         automaticallyImplyLeading: false,
         title: Text(
           widget.agent.name,

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 
 class AllAgents extends StatefulWidget {
   const AllAgents({super.key});
@@ -53,7 +54,6 @@ class _AllAgentsState extends State<AllAgents> {
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        // padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -68,43 +68,43 @@ class _AllAgentsState extends State<AllAgents> {
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Search Users',
-                    labelStyle: TextStyle(color: primary),
-                    hintText: 'Enter name or number',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: primary),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(color: primary),
-                    ),
-                    prefixIcon: Icon(Icons.search, color: primary),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.clear, color: primary),
-                      onPressed: () {
-                        searchController.clear();
-                        setState(() {
-                          searchQuery = '';
-                        });
-                      },
-                    ),
-                  ),
-                  controller: searchController,
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value.toLowerCase();
-                    });
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+            //   child: Center(
+            //     child: TextField(
+            //       decoration: InputDecoration(
+            //         labelText: 'Search Users',
+            //         labelStyle: TextStyle(color: primary),
+            //         hintText: 'Enter name or number',
+            //         hintStyle: const TextStyle(color: Colors.grey),
+            //         border: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(10.0),
+            //           borderSide: BorderSide(color: primary),
+            //         ),
+            //         focusedBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(10.0),
+            //           borderSide: BorderSide(color: primary),
+            //         ),
+            //         prefixIcon: Icon(Icons.search, color: primary),
+            //         suffixIcon: IconButton(
+            //           icon: Icon(Icons.clear, color: primary),
+            //           onPressed: () {
+            //             searchController.clear();
+            //             setState(() {
+            //               searchQuery = '';
+            //             });
+            //           },
+            //         ),
+            //       ),
+            //       controller: searchController,
+            //       onChanged: (value) {
+            //         setState(() {
+            //           searchQuery = value.toLowerCase();
+            //         });
+            //       },
+            //     ),
+            //   ),
+            // ),
             Expanded(
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance.collection('agents').snapshots(),
@@ -123,6 +123,7 @@ class _AllAgentsState extends State<AllAgents> {
                       name: doc['name']!,
                       phoneNumber: doc['phoneNumber'],
                       profileImageUrl: doc['profileImageUrl'] ?? "",
+                      balance: doc["balance"].toInt(),
                       // panCardImageUrl: doc['panCardImageUrl'],
                       // aadharFrontImageUrl: doc['aadharFrontImageUrl'],
                       // aadharBackImageUrl: doc['aadharBackImageUrl'],
@@ -136,8 +137,12 @@ class _AllAgentsState extends State<AllAgents> {
                     return nameLower.contains(searchQuery) || numberLower.contains(searchQuery);
                   }).toList();
 
-                  return ListView.builder(
+                  return ListView.separated(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                     itemCount: filteredAgents.length,
+                    separatorBuilder: (context, index) {
+                      return const Gap(16);
+                    },
                     itemBuilder: (context, index) {
                       var agent = filteredAgents[index];
                       final Timestamp timestamp = agent.timestamp;
@@ -146,82 +151,93 @@ class _AllAgentsState extends State<AllAgents> {
                       final Duration difference = DateTime.now().difference(creationTime);
                       final String elapsedTime = _formatDuration(difference);
 
-                      return ListTile(
-                        onLongPress: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(16.0),
-                                  content: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconButton(
-                                        icon: FaIcon(
-                                          FontAwesomeIcons.circleInfo,
-                                          color: primary,
+                      return Material(
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 2.0,
+                        borderRadius: BorderRadius.circular(16),
+                        child: ListTile(
+                          // splashColor: Colors.white,
+                          onLongPress: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    contentPadding: const EdgeInsets.all(16.0),
+                                    content: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.circleInfo,
+                                            color: primary,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.push(context,
+                                                MaterialPageRoute(builder: (_) => AgentDetailScreen(agent: agent)));
+                                          },
                                         ),
-                                        onPressed: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (_) => AgentDetailScreen(agent: agent)));
-                                        },
-                                      ),
-                                      // Gap(20),
-                                      IconButton(
-                                        icon: FaIcon(
-                                          FontAwesomeIcons.trash,
-                                          color: primary,
+                                        // Gap(20),
+                                        IconButton(
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.trash,
+                                            color: primary,
+                                          ),
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  return AlertDialog(
+                                                    title: const Text("Delete Agent"),
+                                                    content: const Text("Are you sure you want to delete?"),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: const Text("NO"),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          FirebaseFirestore.instance
+                                                              .collection('agents')
+                                                              .doc(agent.id)
+                                                              .delete()
+                                                              .whenComplete(
+                                                                  () => Fluttertoast.showToast(msg: "Agent deleted!"));
+                                                          Navigator.pop(context);
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: const Text("YES"),
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                          },
                                         ),
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                return AlertDialog(
-                                                  title: const Text("Delete Agent"),
-                                                  content: const Text("Are you sure you want to delete?"),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text("NO"),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        FirebaseFirestore.instance
-                                                            .collection('agents')
-                                                            .doc(agent.id)
-                                                            .delete()
-                                                            .whenComplete(
-                                                                () => Fluttertoast.showToast(msg: "Agent deleted!"));
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text("YES"),
-                                                    )
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              });
-                        },
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => DailyAgentsPaymentsScreen(agent: agent)),
-                          );
-                        },
-                        leading: const Icon(Icons.person_outline),
-                        title: Text(agent.name),
-                        subtitle: Text(agent.phoneNumber),
-                        // subtitle: Text('Created $elapsedTime ago'),
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => DailyAgentsPaymentsScreen(agent: agent)),
+                            );
+                          },
+                          leading: const FaIcon(
+                            FontAwesomeIcons.user,
+                            size: 20,
+                          ),
+                          title: Text(agent.name),
+                          subtitle: Text(agent.phoneNumber),
+                          trailing: FaIcon(FontAwesomeIcons.angleRight),
+                          // subtitle: Text('Created $elapsedTime ago'),
+                        ),
                       );
                     },
                   );

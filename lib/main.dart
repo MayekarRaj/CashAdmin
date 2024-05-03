@@ -1,5 +1,7 @@
 import 'package:cash_admin/screens/layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,7 +29,13 @@ void main() async {
   // );
   // Workmanager().registerOneOffTask("task-identifier", "simpleTask");
 
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
 // @pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+

@@ -2,15 +2,13 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:cash_admin/main.dart';
 import 'package:cash_admin/screens/agent/add_agent_screen.dart';
 import 'package:cash_admin/screens/customer/add_cutsomer_screen.dart';
-import 'package:cash_admin/screens/add_payments.dart';
 import 'package:cash_admin/screens/agent/all_agents.dart';
 import 'package:cash_admin/screens/customer/all_customers.dart';
 import 'package:cash_admin/screens/daily_payments_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.037),
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -45,6 +43,16 @@ class _HomePageState extends State<HomePage> {
         children: [
           Column(
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.09,
+                width: double.infinity,
+                child: Image.asset(
+                  "assets/images/badshah_logo_final.png",
+                  color: Color(0xff272B50),
+                  // width: ,
+                ),
+              ),
+              Gap(30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -98,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                   controller: _controller,
                   // timeLineProps: EasyTimeLineProps(),
                   // dayProps: EasyDayProps(),
+                  
                   dayProps: EasyDayProps(
                     dayStructure: DayStructure.monthDayNumDayStr,
                     // dayStructure: DayStructure.dayNumDayStr,
@@ -200,14 +209,14 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(context, MaterialPageRoute(builder: (_) => widget));
           },
           child: Container(
-            height: 90,
-            width: 90,
+            height: MediaQuery.of(context).size.height * 0.095,
+            width: MediaQuery.of(context).size.height * 0.095,
             decoration: BoxDecoration(
               // color: Color(0xFFD6DBEE),
               borderRadius: BorderRadius.circular(34),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0xFF6F8CB0).withOpacity(0.25),
+                  color: const Color(0xFF6F8CB0).withOpacity(0.25),
                   blurRadius: 16.0,
                 ),
               ],
@@ -221,16 +230,16 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             child: Center(
-              child: FaIcon(icon),
+              child: FaIcon(
+                icon,
+              ),
             ),
           ),
         ),
-        SizedBox(
-          height: 6,
-        ),
+        const Gap(6),
         Text(
           text,
-          style: TextStyle(),
+          // style: TextStyle(),
           textAlign: TextAlign.center,
         ),
       ],

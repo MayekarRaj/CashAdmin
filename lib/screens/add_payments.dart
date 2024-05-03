@@ -1,8 +1,10 @@
+import 'package:cash_admin/components/base_page.dart';
 import 'package:cash_admin/main.dart';
 import 'package:cash_admin/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
@@ -115,7 +117,7 @@ class _AddPaymentState extends State<AddPayment> {
             fontSize: 16.0,
           );
         });
-        
+
         // await updateDocument(doc);
       } else {
         logger.i("No document found to update.");
@@ -175,38 +177,68 @@ class _AddPaymentState extends State<AddPayment> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: Color(0xFFC5CEF9),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF24274A),
-        title: const Text(
-          'Add Payment',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        // automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new_outlined,
-          ),
-          color: Colors.white,
-        ),
-      ),
-      body: Padding(
+    return
+        // Scaffold(
+        // // backgroundColor: Color(0xFFC5CEF9),
+        // appBar: AppBar(
+        //   backgroundColor: const Color(0xFF24274A),
+        //   title: const Text(
+        //     'Add Payment',
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //     ),
+        //   ),
+        //   // automaticallyImplyLeading: false,
+        //   leading: IconButton(
+        //     onPressed: () {
+        //       Navigator.pop(context);
+        //     },
+        //     icon: const Icon(
+        //       Icons.arrow_back_ios_new_outlined,
+        //     ),
+        //     color: Colors.white,
+        //   ),
+        // ),
+        // body:
+
+        BasePage(
+      FABBool: false,
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Today\'s Date: $formattedDate',
-              style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const FaIcon(FontAwesomeIcons.calendarDays),
+                const Gap(12),
+                Text(
+                  formattedDate,
+                  style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+                ),
+              ],
             ),
             const Gap(16),
-            Text(widget.user.phoneNumber),
+            Row(
+              children: [
+                const FaIcon(FontAwesomeIcons.solidUser),
+                const Gap(12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.user.name,
+                      style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      widget.user.phoneNumber,
+                      style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             // Text('Select a number'),
             // StreamBuilder(
             //   stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -259,7 +291,7 @@ class _AddPaymentState extends State<AddPayment> {
             const Text('Enter a amount'),
             TextField(
               controller: _paymentController,
-              keyboardType: TextInputType.number, // Allow decimal numbers
+              keyboardType: TextInputType.number,
               style: const TextStyle(fontSize: 20),
               decoration: const InputDecoration(
                 // suffixText: "u\205B",
@@ -282,7 +314,29 @@ class _AddPaymentState extends State<AddPayment> {
                     builder: (BuildContext context) {
                       // return object of AlertDialog
                       return AlertDialog(
-                        title: Text('The amount entered is : $payment'),
+                        backgroundColor: Colors.white,
+                        title: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                            ),
+                            children: <TextSpan>[
+                              const TextSpan(
+                                text: 'The amount entered is: ',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              TextSpan(
+                                text: '₹$payment',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Text('The amount entered is : $payment'),
                         content: const Text('Are you sure you want to save?'),
                         actions: [
                           TextButton(

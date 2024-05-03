@@ -83,6 +83,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
         'name': _nameController.text.trim(),
         'phoneNumber': _phoneNumberController.text.trim(),
         'profileImageUrl': profileImageUrl,
+        "balance": 0,
         'timestamp': FieldValue.serverTimestamp(),
       });
 

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 
 class AllCustomerScreen extends StatefulWidget {
   const AllCustomerScreen({super.key});
@@ -15,7 +16,7 @@ class AllCustomerScreen extends StatefulWidget {
 }
 
 class _AllCustomerScreenState extends State<AllCustomerScreen> {
-    TextEditingController searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   String searchQuery = '';
   String _formatDuration(Duration duration) {
     if (duration.inDays > 0) {
@@ -33,14 +34,14 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF24274A),
+        backgroundColor: const Color(0xFF24274A),
         // automaticallyImplyLeading: false,
         leadingWidth: 45,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_outlined,
           ),
           color: Colors.white,
@@ -68,7 +69,7 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               child: Center(
                 child: TextField(
                   decoration: InputDecoration(
@@ -136,8 +137,12 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                     return nameLower.contains(searchQuery) || numberLower.contains(searchQuery);
                   }).toList();
 
-                  return ListView.builder(
+                  return ListView.separated(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                     itemCount: filteredUsers.length,
+                    separatorBuilder: (context, index) {
+                      return const Gap(8);
+                    },
                     itemBuilder: (context, index) {
                       var user = filteredUsers[index];
                       final Timestamp timestamp = user.timestamp;
@@ -146,9 +151,13 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                       final Duration difference = DateTime.now().difference(creationTime);
                       final String elapsedTime = _formatDuration(difference);
 
-                      return ListTile(
-                        onLongPress: () {
-                          showDialog(
+                      return Material(
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 2.0,
+                        borderRadius: BorderRadius.circular(16),
+                        child: ListTile(
+                          onLongPress: () {
+                            showDialog(
                               context: context,
                               builder: (_) {
                                 return AlertDialog(
@@ -165,8 +174,10 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                                           color: primary,
                                         ),
                                         onPressed: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (_) => CustomerDetails(user: user)));
+                                          Navigator.pop(context);
+
+                                          Navigator.push(
+                                              context, MaterialPageRoute(builder: (_) => CustomerDetails(user: user)));
                                         },
                                       ),
                                       // Gap(20),
@@ -177,58 +188,71 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                                         ),
                                         onPressed: () {
                                           showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                return AlertDialog(
-                                                  title: Text("Delete User"),
-                                                  content: Text("Are you sure you want to delete?"),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: Text("NO")),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        FirebaseFirestore.instance
-                                                            .collection('users')
-                                                            .doc(user.id)
-                                                            .delete()
-                                                            .whenComplete(
-                                                                () => Fluttertoast.showToast(msg: "User deleted!"));
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("YES"),
-                                                    )
-                                                  ],
-                                                );
-                                              });
+                                            context: context,
+                                            builder: (_) {
+                                              return AlertDialog(
+                                                backgroundColor: Colors.white,
+                                                title: const Text("Delete User"),
+                                                content: const Text("Are you sure you want to delete the user?"),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("NO"),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      FirebaseFirestore.instance
+                                                          .collection('users')
+                                                          .doc(user.id)
+                                                          .delete()
+                                                          .whenComplete(
+                                                              () => Fluttertoast.showToast(msg: "User deleted!"));
+                                                      Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("YES"),
+                                                  )
+                                                ],
+                                              );
+                                            },
+                                          );
                                         },
                                       ),
                                     ],
                                   ),
                                 );
-                              });
-                        },
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CustomerScreen(
-                                        user: user,
-                                      )));
-                        },
-                        isThreeLine: false,
-                        leading: const FaIcon(FontAwesomeIcons.solidUser),
-                        title: Text(
-                          user.name,
-                          style: const TextStyle(
-                            fontSize: 18,
+                              },
+                            );
+                          },
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => CustomerScreen(
+                                          user: user,
+                                        )));
+                          },
+                          isThreeLine: false,
+                          leading: const FaIcon(FontAwesomeIcons.solidUser),
+                          title: Text(
+                            user.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          subtitle: Text(user.phoneNumber),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(elapsedTime),
+                              const Gap(6),
+                              const FaIcon(FontAwesomeIcons.angleRight),
+                            ],
                           ),
                         ),
-                        subtitle: Text(user.phoneNumber),
-                        trailing: Text(elapsedTime),
                       );
                     },
                   );
